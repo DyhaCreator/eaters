@@ -1,15 +1,11 @@
 #include <iostream>
-
-int random(int min, int max)
-{
-  srand(time(NULL));
-  int num = min + rand() % (max - min + 1);
-  return num;
-}
+#include "myFunctions.h"
 
 class Eaters{
     public:
         int x;
+        int speed = 0;
+        int eat = 100;
     Eaters(int SIZE_WORLD){
         this->x = random(0, SIZE_WORLD);
     }
