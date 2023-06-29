@@ -1,13 +1,25 @@
 #include <iostream>
 #include <fstream>
+#include <vector>
 #include <string>
 
 int main(){
-    std::string path, data;
+    std::vector<int> data = std::vector<int>();
+    std::string path, dataStr;
     std::cin >> path;
     std::ifstream file;
     file.open(path);
-    getline(file, data);
-    std::cout << data << std::endl;
+    
+    while(!file.eof()){
+        char ch;
+        file.get(ch);
+        dataStr += ch;
+    }
+    
+    for(int i = 0; i < dataStr.size(); i++){
+        int n = dataStr[i];
+        std::cout << n << std::endl;
+    }
+
     return 0;
 }
