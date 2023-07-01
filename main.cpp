@@ -34,11 +34,13 @@ int main(){
     int SIZE_WORLD;
     int EAT_TO_DIVISION;
     int EAT_TO_MOVE;
+    int STEPS;
+    int max_population = 0;
     std::vector<int> data = std::vector<int>();
     std::string path, dataStr;
     std::cin >> path;
 
-    randFileBytes(path, 4);
+    //randFileBytes(path, 10);
 
     std::ifstream file;
     file.open(path);
@@ -57,19 +59,25 @@ int main(){
     
     for(int i = 0; i < dataStr.size(); i++){
         int n = dataStr[i];
-        data.push_back(n + 128);
+        data.push_back(n);
     }
 
-    printArr(data);
+    //printArr(data);
+    std::cout << "start" << std::endl;
 
     Eaters unit = Eaters(SIZE_WORLD);
 
     std::vector<Eaters>units = std::vector<Eaters>();
     units.push_back(unit);
-    while(units.size() > 0){
+    STEPS = 75;
+    int x = 0;
+    while(units.size() > 0 && x < STEPS){
+        x++;
+        std::cout << x << " population -> " << units.size() << std::endl;
+        //printArr(data);
         std::vector<int>indexes = std::vector<int>();
         for(int i = 0; i < units.size(); i ++){
-            units[i].eat += data[units[i].x];
+            units[i].eat += data[units[i].x] + 128;
             data[units[i].x] = 0;
             if(units[i].x == 0){
                 units[i].speed = 1;
@@ -78,10 +86,10 @@ int main(){
                 units[i].speed = -1;
             }
             else{
-                if(data[units[i].x + 1] > data[units[i].x - 1]){
+                if(data[units[i].x + 1] + 128 > data[units[i].x - 1] + 128){
                     units[i].speed = 1;
                 }
-                else if(data[units[i].x + 1] < data[units[i].x - 1]){
+                else if(data[units[i].x + 1] + 128 < data[units[i].x - 1] + 128){
                     units[i].speed = -1;
                 }
             }
@@ -90,6 +98,7 @@ int main(){
             if(units[i].eat > EAT_TO_DIVISION){
                 unit = Eaters(SIZE_WORLD);
                 units.push_back(unit);
+                units[i].eat -= EAT_TO_DIVISION;
             }
             if(units[i].eat <= 0){
                 indexes.push_back(i);
@@ -98,9 +107,18 @@ int main(){
         for(int i = 0; i < indexes.size(); i ++){
             units = del(units, indexes[i] - i);
         }
-        printArr(data);
+        if(max_population < units.size())max_population = units.size();
         //std::cout << units.size() << ' ' << units[0].eat << std::endl;
-    }
+        std::ofstream ofile;
+        ofile.open(path);
 
+        for(int i = 0; i < data.size(); i++){
+            ofile << char(data[i]);
+        }
+
+        ofile.close();
+    }
+    std::cout << "end" << std::endl;
+    std::cout << "max_population -> " << max_population << std::endl;
     return 0;
 }
